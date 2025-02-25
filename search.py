@@ -19,7 +19,6 @@ Pacman agents (in searchAgents.py).
 
 import util
 from game import Directions
-#from game import GameStateData
 from typing import List
 
 class SearchProblem:
@@ -31,13 +30,18 @@ class SearchProblem:
     """
 
     def getStartState(self):
-        return self.start
-        ##return GameStateData.__init__(self)
+        """
+        Returns the start state for the search problem.
+        """
+        util.raiseNotDefined()
 
     def isGoalState(self, state):
-        food = state.getFood()
-        x,y = self.pos
-        return food[x][y]
+        """
+          state: Search state
+
+        Returns True if and only if the state is a valid goal state.
+        """
+        util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -48,8 +52,7 @@ class SearchProblem:
         state, 'action' is the action required to get there, and 'stepCost' is
         the incremental cost of expanding to that successor.
         """
-        x,y = self.pos
-        
+        util.raiseNotDefined()
 
     def getCostOfActions(self, actions):
         """
@@ -73,31 +76,60 @@ def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
-    """
-    Search the deepest nodes in the search tree first.
+    from util import Stack
+    stack = Stack()
+    visited = set()
+    stack.push((problem.getStartState(), []))
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
+    while not stack.isEmpty():
+        state, path = stack.pop()
+        if problem.isGoalState(state):
+            return path 
+        if state not in visited:
+            visited.add(state)
+            for next_state, action, _ in problem.getSuccessors(state):
+                if next_state not in visited:
+                    stack.push((next_state, path + [action]))
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return [] 
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Queue
+    queue = Queue()
+    visited = set()
+    queue.push((problem.getStartState(), []))
+
+    while not queue.isEmpty():
+        state, path = queue.pop()
+        if problem.isGoalState(state):
+            return path 
+        if state not in visited:
+            visited.add(state)
+            for next_state, action, _ in problem.getSuccessors(state):
+                if next_state not in visited:
+                    queue.push((next_state, path + [action]))
+
+    return []
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue
+    pq = PriorityQueue()
+    visited = {}
+    pq.push((problem.getStartState(), [], 0), 0)
+
+    while not pq.isEmpty():
+        state, path, cost = pq.pop()
+        if problem.isGoalState(state):
+            return path
+        if state not in visited or cost < visited[state]:
+            visited[state] = cost
+            for next_state, action, step_cost in problem.getSuccessors(state):
+                new_cost = cost + step_cost 
+                if next_state not in visited or new_cost < visited[next_state]:
+                    pq.push((next_state, path + [action], new_cost), new_cost)
+
+    return [] 
+
 
 def nullHeuristic(state, problem=None) -> float:
     """
