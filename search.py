@@ -76,8 +76,7 @@ def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
-    from util import Stack
-    stack = Stack()
+    stack = util.Stack()
     visited = set()
     stack.push((problem.getStartState(), []))
 
@@ -94,8 +93,7 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     return [] 
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
-    from util import Queue
-    queue = Queue()
+    queue = util.Queue()
     visited = set()
     queue.push((problem.getStartState(), []))
 
