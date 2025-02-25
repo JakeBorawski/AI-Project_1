@@ -451,9 +451,20 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+    from util import manhattanDistance
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+
+    if not foodList:
+        return 0
+    max_distance = max(manhattanDistance(position, food) for food in foodList)
+    max_food_distance = 0
+    for i in range(len(foodList)):
+        for j in range(i + 1, len(foodList)):
+            dist = manhattanDistance(foodList[i], foodList[j])
+            max_food_distance = max(max_food_distance, dist)
+    return max(max_distance, max_food_distance)
 
 
 class ClosestDotSearchAgent(SearchAgent):
