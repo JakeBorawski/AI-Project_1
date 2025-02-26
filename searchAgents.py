@@ -374,9 +374,23 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    current_position = state[0]
+    visited_corners = state[1]
+    unvisited_corners = [corners[i] for i in range(4) if not visited_corners[i]]
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    if not unvisited_corners:
+        return 0  
+    total_heuristic = 0
+    current_pos = current_position
+
+    while unvisited_corners:
+        distances = [(util.manhattanDistance(current_pos, corner), corner) for corner in unvisited_corners]
+        min_distance, closest_corner = min(distances)
+        total_heuristic += min_distance
+        current_pos = closest_corner
+        unvisited_corners.remove(closest_corner)
+
+    return total_heuristic
 
 
 
@@ -400,7 +414,7 @@ class FoodSearchProblem:
         self.walls = startingGameState.getWalls()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
-        self.heuristicInfo = {} # A dictionary for the heuristic to store information
+        self.heuristicInfo = {} 
 
     def getStartState(self):
         return self.start
@@ -428,7 +442,6 @@ class FoodSearchProblem:
         x,y= self.getStartState()[0]
         cost = 0
         for action in actions:
-            # figure out the next state and see whether it's legal
             dx, dy = Actions.directionToVector(action)
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]:
@@ -465,18 +478,17 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    from util import manhattanDistance
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
     foodList = foodGrid.asList()
 
     if not foodList:
         return 0
-    max_distance = max(manhattanDistance(position, food) for food in foodList)
+    max_distance = max(util.manhattanDistance(position, food) for food in foodList)
     max_food_distance = 0
     for i in range(len(foodList)):
         for j in range(i + 1, len(foodList)):
-            dist = manhattanDistance(foodList[i], foodList[j])
+            dist = util.manhattanDistance(foodList[i], foodList[j])
             max_food_distance = max(max_food_distance, dist)
     return max(max_distance, max_food_distance)
 
